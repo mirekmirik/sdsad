@@ -15,6 +15,7 @@ interface CountrySelectorProps {
   selectedPlanName: string
   selectedPlanPrice: number
   onBack: () => void
+  onBuyNow?: (data: { countryName: string; countryFlag: string; quantity: number; price: number }) => void
 }
 
 const countries: Country[] = [
@@ -27,7 +28,7 @@ const countries: Country[] = [
   { id: "us", name: "США", flag: "\uD83C\uDDFA\uD83C\uDDF8", stock: 0, price: 990 },
 ]
 
-export function CountrySelector({ selectedPlanName, selectedPlanPrice, onBack }: CountrySelectorProps) {
+export function CountrySelector({ selectedPlanName, selectedPlanPrice, onBack, onBuyNow }: CountrySelectorProps) {
   const [selectedCountry, setSelectedCountry] = useState<string>("de")
   const [quantity, setQuantity] = useState(1)
 
@@ -145,7 +146,19 @@ export function CountrySelector({ selectedPlanName, selectedPlanPrice, onBack }:
           <ShoppingCart className="h-4 w-4" />
           {"В корзину"}
         </button>
-        <button className="group relative flex flex-1 items-center justify-center gap-2 overflow-hidden rounded-2xl bg-primary px-8 py-3 text-sm font-bold text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/30 active:scale-[0.98]">
+        <button
+          onClick={() => {
+            if (selected && onBuyNow) {
+              onBuyNow({
+                countryName: selected.name,
+                countryFlag: selected.flag,
+                quantity,
+                price: selected.price,
+              })
+            }
+          }}
+          className="group relative flex flex-1 items-center justify-center gap-2 overflow-hidden rounded-2xl bg-primary px-8 py-3 text-sm font-bold text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/30 active:scale-[0.98]"
+        >
           <Zap className="h-4 w-4" />
           {"Купить сейчас"}
           <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-primary via-primary/80 to-primary opacity-0 transition-opacity group-hover:opacity-100" />

@@ -7,6 +7,7 @@ import type { NavTab } from "@/components/store-header"
 import { StepIndicator } from "@/components/step-indicator"
 import { PlanCard } from "@/components/plan-card"
 import { StoreFooter } from "@/components/store-footer"
+import { CartCheckout } from "@/components/cart-checkout"
 import { TikTokBackground } from "@/components/tiktok-background"
 import { LoginModal } from "@/components/login-modal"
 import { FaqSection } from "@/components/faq-section"
@@ -54,6 +55,13 @@ export default function StorePage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [username, setUsername] = useState("")
   const [showLogin, setShowLogin] = useState(false)
+  const [cartItem, setCartItem] = useState<{
+    planName: string
+    countryName: string
+    countryFlag: string
+    quantity: number
+    price: number
+  } | null>(null)
 
   const selectedPlanData = plans.find((p) => p.id === selectedPlan)
 
@@ -80,11 +88,32 @@ export default function StorePage() {
     setCurrentStep(1)
   }
 
+  const handleBuyNow = (data: { countryName: string; countryFlag: string; quantity: number; price: number }) => {
+    setCartItem({
+      planName: selectedPlanData?.name ?? "",
+      countryName: data.countryName,
+      countryFlag: data.countryFlag,
+      quantity: data.quantity,
+      price: data.price,
+    })
+    setCurrentStep(3)
+  }
+
+  const handleCartBack = () => {
+    setCurrentStep(2)
+  }
+
+  const handleRemoveItem = () => {
+    setCartItem(null)
+    setCurrentStep(2)
+  }
+
   // When switching tabs, reset to step 1
   const handleTabChange = (tab: NavTab) => {
     setActiveTab(tab)
     if (tab === "store") {
       setCurrentStep(1)
+      setCartItem(null)
     }
   }
 
@@ -197,9 +226,18 @@ export default function StorePage() {
                   selectedPlanName={selectedPlanData?.name ?? ""}
                   selectedPlanPrice={selectedPlanData?.price ?? 0}
                   onBack={handleBack}
+                  onBuyNow={handleBuyNow}
                 />
               </div>
             </>
+          )}
+
+          {activeTab === "store" && currentStep === 3 && cartItem && (
+            <CartCheckout
+              item={cartItem}
+              onBack={handleCartBack}
+              onRemoveItem={handleRemoveItem}
+            />
           )}
 
           {activeTab === "support" && (
