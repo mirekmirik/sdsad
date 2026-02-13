@@ -16,6 +16,8 @@ interface CountrySelectorProps {
   selectedPlanPrice: number
   onBack: () => void
   onBuyNow?: (data: { countryName: string; countryFlag: string; quantity: number; price: number }) => void
+  onAddToCart?: (data: { countryName: string; countryFlag: string; quantity: number; price: number }) => void
+  cartItemCount?: number
 }
 
 const countries: Country[] = [
@@ -28,7 +30,8 @@ const countries: Country[] = [
   { id: "us", name: "США", flag: "\uD83C\uDDFA\uD83C\uDDF8", stock: 0, price: 990 },
 ]
 
-export function CountrySelector({ selectedPlanName, selectedPlanPrice, onBack, onBuyNow }: CountrySelectorProps) {
+export function CountrySelector({ selectedPlanName, selectedPlanPrice, onBack, onBuyNow, onAddToCart, cartItemCount = 0 }: CountrySelectorProps) {
+  const [addedToCart, setAddedToCart] = useState(false)
   const [selectedCountry, setSelectedCountry] = useState<string>("de")
   const [quantity, setQuantity] = useState(1)
 
@@ -142,9 +145,41 @@ export function CountrySelector({ selectedPlanName, selectedPlanPrice, onBack, o
           <ArrowLeft className="h-4 w-4" />
           {"Назад"}
         </button>
-        <button className="flex flex-1 items-center justify-center gap-2 rounded-2xl border border-border bg-secondary px-6 py-3 text-sm font-bold text-foreground transition-all hover:bg-secondary/80 active:scale-[0.98]">
-          <ShoppingCart className="h-4 w-4" />
-          {"В корзину"}
+        <button
+          onClick={() => {
+            if (selected && onAddToCart) {
+              onAddToCart({
+                countryName: selected.name,
+                countryFlag: selected.flag,
+                quantity,
+                price: selected.price,
+              })
+              setAddedToCart(true)
+              setTimeout(() => setAddedToCart(false), 1500)
+            }
+          }}
+          className={`flex flex-1 items-center justify-center gap-2 rounded-2xl border px-6 py-3 text-sm font-bold transition-all active:scale-[0.98] ${
+            addedToCart
+              ? "border-accent bg-accent/10 text-accent"
+              : "border-border bg-secondary text-foreground hover:bg-secondary/80"
+          }`}
+        >
+          {addedToCart ? (
+            <>
+              <Check className="h-4 w-4" />
+              {"Добавлено"}
+            </>
+          ) : (
+            <>
+              <ShoppingCart className="h-4 w-4" />
+              {"В корзину"}
+              {cartItemCount > 0 && (
+                <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-primary px-1.5 text-[10px] font-bold text-primary-foreground">
+                  {cartItemCount}
+                </span>
+              )}
+            </>
+          )}
         </button>
         <button
           onClick={() => {
