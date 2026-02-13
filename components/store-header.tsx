@@ -1,6 +1,6 @@
 "use client"
 
-import { Store, HelpCircle, MessageCircleQuestion, LogIn, User, Menu, X, ShoppingCart } from "lucide-react"
+import { Store, HelpCircle, MessageCircleQuestion, LogIn, User, Menu, X } from "lucide-react"
 import { useState } from "react"
 
 export type NavTab = "store" | "support" | "faq"
@@ -18,8 +18,6 @@ interface StoreHeaderProps {
   username?: string
   onLoginClick: () => void
   onLogout: () => void
-  cartCount?: number
-  onCartClick?: () => void
 }
 
 export function StoreHeader({
@@ -29,8 +27,6 @@ export function StoreHeader({
   username,
   onLoginClick,
   onLogout,
-  cartCount = 0,
-  onCartClick,
 }: StoreHeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
@@ -70,20 +66,6 @@ export function StoreHeader({
 
         {/* Right actions */}
         <div className="flex items-center gap-2">
-          {/* Cart icon */}
-          {cartCount > 0 && (
-            <button
-              onClick={onCartClick}
-              className="relative flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-card/60 text-muted-foreground backdrop-blur-md transition-colors hover:text-foreground"
-              aria-label="Корзина"
-            >
-              <ShoppingCart className="h-4 w-4" />
-              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
-                {cartCount}
-              </span>
-            </button>
-          )}
-
           {isLoggedIn ? (
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-2 rounded-xl border border-border bg-card/60 px-3 py-2 backdrop-blur-md">

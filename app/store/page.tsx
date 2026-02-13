@@ -135,13 +135,6 @@ export default function StorePage() {
           username={username}
           onLoginClick={() => setShowLogin(true)}
           onLogout={handleLogout}
-          cartCount={cartItem ? cartItem.quantity : 0}
-          onCartClick={() => {
-            if (cartItem) {
-              setActiveTab("store")
-              setCurrentStep(3)
-            }
-          }}
         />
 
         {/* Social proof stats */}

@@ -134,7 +134,7 @@ export default function LandingPage() {
         </header>
 
         {/* Hero Section */}
-        <section className="mx-auto max-w-5xl px-4 py-16 text-center sm:px-6 sm:py-24">
+        <section className="mx-auto max-w-5xl px-4 py-12 text-center sm:px-6 sm:py-16">
           <div className="mx-auto max-w-3xl">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary">
               <Zap className="h-3.5 w-3.5" />
@@ -183,7 +183,7 @@ export default function LandingPage() {
         </section>
 
         {/* Features Section */}
-        <section className="mx-auto max-w-5xl px-4 py-16 sm:px-6">
+        <section className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
           <div className="text-center">
             <h3 className="text-balance text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
               {"Почему выбирают нас"}
@@ -210,7 +210,7 @@ export default function LandingPage() {
         </section>
 
         {/* Countries Section */}
-        <section id="countries" className="mx-auto max-w-5xl px-4 py-16 sm:px-6">
+        <section id="countries" className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
           <div className="text-center">
             <h3 className="text-balance text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
               {"Какая страна подойдёт вам?"}
@@ -252,7 +252,7 @@ export default function LandingPage() {
         </section>
 
         {/* Payment Methods */}
-        <section className="mx-auto max-w-5xl px-4 py-16 sm:px-6">
+        <section className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
           <div className="text-center">
             <h3 className="text-balance text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
               {"Удобные способы оплаты"}
@@ -305,7 +305,7 @@ export default function LandingPage() {
         </section>
 
         {/* Reviews */}
-        <section className="mx-auto max-w-5xl px-4 py-16 sm:px-6">
+        <section className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
           <div className="text-center">
             <h3 className="text-balance text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
               {"Отзывы клиентов"}
@@ -341,13 +341,13 @@ export default function LandingPage() {
         </section>
 
         {/* FAQ */}
-        <section className="mx-auto max-w-5xl px-4 py-16 sm:px-6">
+        <section className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
           <LandingFaq />
         </section>
 
         {/* CTA Section */}
-        <section className="mx-auto max-w-5xl px-4 py-16 sm:px-6">
-          <div className="rounded-3xl border border-primary/20 bg-card/80 px-6 py-12 text-center backdrop-blur-md sm:px-12">
+        <section className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
+          <div className="rounded-3xl border border-primary/20 bg-card/80 px-6 py-10 text-center backdrop-blur-md sm:px-12">
             <h3 className="text-balance text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
               {"Готовы начать?"}
             </h3>
