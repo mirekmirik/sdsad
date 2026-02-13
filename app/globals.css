@@ -1,0 +1,107 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer base {
+  :root {
+    --background: 240 6% 7%;
+    --foreground: 0 0% 95%;
+    --card: 240 5% 11%;
+    --card-foreground: 0 0% 95%;
+    --popover: 240 5% 11%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 347 77% 55%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 4% 16%;
+    --secondary-foreground: 0 0% 85%;
+    --muted: 240 4% 16%;
+    --muted-foreground: 240 5% 55%;
+    --accent: 174 62% 47%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 4% 18%;
+    --input: 240 4% 18%;
+    --ring: 347 77% 55%;
+    --chart-1: 347 77% 55%;
+    --chart-2: 174 62% 47%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --radius: 0.75rem;
+    --sidebar-background: 240 6% 7%;
+    --sidebar-foreground: 0 0% 90%;
+    --sidebar-primary: 347 77% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 4% 16%;
+    --sidebar-accent-foreground: 0 0% 90%;
+    --sidebar-border: 240 4% 18%;
+    --sidebar-ring: 347 77% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* ---- Floating icon animations ---- */
+@keyframes float-up-1 {
+  0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 0.07; }
+  25% { transform: translateY(-60px) rotate(8deg) scale(1.1); opacity: 0.12; }
+  50% { transform: translateY(-30px) rotate(-5deg) scale(0.95); opacity: 0.08; }
+  75% { transform: translateY(-80px) rotate(6deg) scale(1.05); opacity: 0.1; }
+  100% { transform: translateY(0) rotate(0deg) scale(1); opacity: 0.07; }
+}
+@keyframes float-up-2 {
+  0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 0.05; }
+  33% { transform: translateY(-50px) rotate(-10deg) scale(1.15); opacity: 0.1; }
+  66% { transform: translateY(-20px) rotate(7deg) scale(0.9); opacity: 0.06; }
+  100% { transform: translateY(0) rotate(0deg) scale(1); opacity: 0.05; }
+}
+@keyframes float-up-3 {
+  0% { transform: translateY(0) rotate(5deg) scale(0.95); opacity: 0.06; }
+  50% { transform: translateY(-70px) rotate(-8deg) scale(1.1); opacity: 0.11; }
+  100% { transform: translateY(0) rotate(5deg) scale(0.95); opacity: 0.06; }
+}
+@keyframes drift-horizontal {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(15px); }
+  100% { transform: translateX(0); }
+}
+
+.animate-float-1 { animation: float-up-1 18s ease-in-out infinite, drift-horizontal 12s ease-in-out infinite; }
+.animate-float-2 { animation: float-up-2 22s ease-in-out infinite, drift-horizontal 15s ease-in-out infinite; }
+.animate-float-3 { animation: float-up-3 16s ease-in-out infinite, drift-horizontal 10s ease-in-out infinite; }
+
+/* Glow effects */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 hsl(var(--primary) / 0.3); }
+  50% { box-shadow: 0 0 24px 6px hsl(var(--primary) / 0.15); }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes glow-ring {
+  0%, 100% { box-shadow: 0 0 0 0 hsl(var(--primary) / 0); }
+  50% { box-shadow: 0 0 0 4px hsl(var(--primary) / 0.15); }
+}
+
+.animate-pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
+.animate-shimmer { background-size: 200% 100%; animation: shimmer 2.5s linear infinite; }
+.animate-glow-ring { animation: glow-ring 2s ease-in-out infinite; }
