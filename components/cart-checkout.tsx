@@ -340,7 +340,7 @@ export function CartCheckout({ item, onBack, onRemoveItem, onGoHome }: CartCheck
             }`}
           >
             <Image
-              src="/images/bitcoin.png"
+              src="/images/btc.png"
               alt="Bitcoin"
               width={32}
               height={32}
