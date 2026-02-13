@@ -15,10 +15,11 @@ interface CartCheckoutProps {
   item: CartItem
   onBack: () => void
   onRemoveItem: () => void
+  onGoHome: () => void
 }
 
 type PaymentMethod = "card" | "crypto"
-type CheckoutPhase = "form" | "loading" | "details"
+type CheckoutPhase = "form" | "loading" | "details" | "waiting"
 
 function MirLogo({ className }: { className?: string }) {
   return (
@@ -61,7 +62,7 @@ function formatTime(seconds: number): string {
   return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`
 }
 
-export function CartCheckout({ item, onBack, onRemoveItem }: CartCheckoutProps) {
+export function CartCheckout({ item, onBack, onRemoveItem, onGoHome }: CartCheckoutProps) {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card")
   const [agreedToTerms, setAgreedToTerms] = useState(true)
   const [promoCode, setPromoCode] = useState("")
@@ -116,6 +117,10 @@ export function CartCheckout({ item, onBack, onRemoveItem }: CartCheckoutProps) 
     setTimeout(() => setCopied(false), 2000)
   }, [])
 
+  const handleConfirm = useCallback(() => {
+    setPhase("waiting")
+  }, [])
+
   const timerProgress = timeLeft / (15 * 60)
 
   // Phase: Loading - waiting for API confirmation
@@ -136,6 +141,34 @@ export function CartCheckout({ item, onBack, onRemoveItem }: CartCheckoutProps) 
           <Loader2 className="h-4 w-4 animate-spin text-primary" />
           <span className="text-xs text-muted-foreground">{"Пожалуйста, подождите"}</span>
         </div>
+      </div>
+    )
+  }
+
+  // Phase: Waiting for payment confirmation
+  if (phase === "waiting") {
+    return (
+      <div className="flex flex-col items-center justify-center px-6 py-16 sm:px-8">
+        <div className="relative mb-6">
+          <div className="h-16 w-16 rounded-full border-4 border-border" />
+          <div className="absolute inset-0 h-16 w-16 animate-spin rounded-full border-4 border-transparent border-t-primary" />
+        </div>
+        <h3 className="text-lg font-bold text-foreground">
+          {"Ожидание пополнения..."}
+        </h3>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {"Как только средства поступят, заказ будет выполнен автоматически"}
+        </p>
+        <div className="mt-4 flex items-center gap-2">
+          <Loader2 className="h-4 w-4 animate-spin text-primary" />
+          <span className="text-xs text-muted-foreground">{"Проверяем оплату"}</span>
+        </div>
+        <button
+          onClick={onGoHome}
+          className="mt-8 flex items-center justify-center gap-2 rounded-2xl border border-border bg-card px-8 py-3 text-sm font-bold text-foreground transition-all hover:bg-secondary active:scale-[0.98]"
+        >
+          {"Вернуться на главную"}
+        </button>
       </div>
     )
   }
@@ -239,6 +272,25 @@ export function CartCheckout({ item, onBack, onRemoveItem }: CartCheckoutProps) 
             </div>
           )}
         </div>
+
+        {/* Action buttons */}
+        {!timerExpired && (
+          <div className="mt-6 flex items-center justify-center gap-3">
+            <button
+              onClick={onGoHome}
+              className="flex items-center justify-center rounded-2xl border border-border bg-card px-8 py-3 text-sm font-bold text-foreground transition-all hover:bg-secondary active:scale-[0.98]"
+            >
+              {"Отмена"}
+            </button>
+            <button
+              onClick={handleConfirm}
+              className="group relative flex items-center justify-center overflow-hidden rounded-2xl bg-primary px-8 py-3 text-sm font-bold text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/30 active:scale-[0.98]"
+            >
+              <span className="relative z-10">{"Подтвердить"}</span>
+              <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-primary via-primary/80 to-primary opacity-0 transition-opacity group-hover:opacity-100" />
+            </button>
+          </div>
+        )}
       </div>
     )
   }

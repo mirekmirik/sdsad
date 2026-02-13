@@ -108,6 +108,12 @@ export default function StorePage() {
     setCurrentStep(2)
   }
 
+  const handleGoHome = () => {
+    setCartItem(null)
+    setCurrentStep(1)
+    setActiveTab("store")
+  }
+
   // When switching tabs, reset to step 1
   const handleTabChange = (tab: NavTab) => {
     setActiveTab(tab)
@@ -237,6 +243,7 @@ export default function StorePage() {
               item={cartItem}
               onBack={handleCartBack}
               onRemoveItem={handleRemoveItem}
+              onGoHome={handleGoHome}
             />
           )}
 
