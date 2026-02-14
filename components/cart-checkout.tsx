@@ -13,9 +13,9 @@ interface CartItem {
 }
 
 interface CartCheckoutProps {
-  items: CartItem[]
+  item: CartItem
   onBack: () => void
-  onRemoveItem: (index: number) => void
+  onRemoveItem: () => void
   onGoHome: () => void
 }
 
@@ -30,7 +30,7 @@ function formatTime(seconds: number): string {
   return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`
 }
 
-export function CartCheckout({ items, onBack, onRemoveItem, onGoHome }: CartCheckoutProps) {
+export function CartCheckout({ item, onBack, onRemoveItem, onGoHome }: CartCheckoutProps) {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card")
   const [agreedToTerms, setAgreedToTerms] = useState(true)
   const [promoCode, setPromoCode] = useState("")
@@ -39,7 +39,7 @@ export function CartCheckout({ items, onBack, onRemoveItem, onGoHome }: CartChec
   const [timerExpired, setTimerExpired] = useState(false)
   const [copied, setCopied] = useState(false)
 
-  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const total = item.price * item.quantity
 
   // Timer countdown
   useEffect(() => {
