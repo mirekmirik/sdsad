@@ -2,11 +2,12 @@
 
 import { useState } from "react"
 import { Check, Minus, Plus, ShoppingCart, ArrowLeft, Zap } from "lucide-react"
+import { CountryFlag } from "@/components/country-flag"
 
 interface Country {
   id: string
   name: string
-  flag: string
+  code: string
   stock: number
   price: number
 }
@@ -15,19 +16,19 @@ interface CountrySelectorProps {
   selectedPlanName: string
   selectedPlanPrice: number
   onBack: () => void
-  onBuyNow?: (data: { countryName: string; countryFlag: string; quantity: number; price: number }) => void
-  onAddToCart?: (data: { countryName: string; countryFlag: string; quantity: number; price: number }) => void
+  onBuyNow?: (data: { countryName: string; countryCode: string; quantity: number; price: number }) => void
+  onAddToCart?: (data: { countryName: string; countryCode: string; quantity: number; price: number }) => void
   cartItemCount?: number
 }
 
 const countries: Country[] = [
-  { id: "kz", name: "Казахстан", flag: "\uD83C\uDDF0\uD83C\uDDFF", stock: 5, price: 990 },
-  { id: "de", name: "Германия", flag: "\uD83C\uDDE9\uD83C\uDDEA", stock: 13, price: 990 },
-  { id: "ca", name: "Канада", flag: "\uD83C\uDDE8\uD83C\uDDE6", stock: 3, price: 990 },
-  { id: "pl", name: "Польша", flag: "\uD83C\uDDF5\uD83C\uDDF1", stock: 1, price: 990 },
-  { id: "ee", name: "Эстония", flag: "\uD83C\uDDEA\uD83C\uDDEA", stock: 10, price: 990 },
-  { id: "tr", name: "Турция", flag: "\uD83C\uDDF9\uD83C\uDDF7", stock: 8, price: 990 },
-  { id: "us", name: "США", flag: "\uD83C\uDDFA\uD83C\uDDF8", stock: 0, price: 990 },
+  { id: "kz", name: "Казахстан", code: "kz", stock: 5, price: 990 },
+  { id: "de", name: "Германия", code: "de", stock: 13, price: 990 },
+  { id: "ca", name: "Канада", code: "ca", stock: 3, price: 990 },
+  { id: "pl", name: "Польша", code: "pl", stock: 1, price: 990 },
+  { id: "ee", name: "Эстония", code: "ee", stock: 10, price: 990 },
+  { id: "tr", name: "Турция", code: "tr", stock: 8, price: 990 },
+  { id: "us", name: "США", code: "us", stock: 0, price: 990 },
 ]
 
 export function CountrySelector({ selectedPlanName, selectedPlanPrice, onBack, onBuyNow, onAddToCart, cartItemCount = 0 }: CountrySelectorProps) {
@@ -75,7 +76,7 @@ export function CountrySelector({ selectedPlanName, selectedPlanPrice, onBack, o
             >
               {/* Flag + Stock */}
               <div className="flex w-full items-center justify-between">
-                <span className="text-2xl">{country.flag}</span>
+                <CountryFlag code={country.code} size={32} />
                 <span className={`text-[10px] font-bold tabular-nums ${isSoldOut ? "text-muted-foreground" : "text-muted-foreground"}`}>
                   {country.stock} {"шт."}
                 </span>
@@ -150,7 +151,7 @@ export function CountrySelector({ selectedPlanName, selectedPlanPrice, onBack, o
             if (selected && onAddToCart) {
               onAddToCart({
                 countryName: selected.name,
-                countryFlag: selected.flag,
+                countryCode: selected.code,
                 quantity,
                 price: selected.price,
               })
@@ -186,7 +187,7 @@ export function CountrySelector({ selectedPlanName, selectedPlanPrice, onBack, o
             if (selected && onBuyNow) {
               onBuyNow({
                 countryName: selected.name,
-                countryFlag: selected.flag,
+                countryCode: selected.code,
                 quantity,
                 price: selected.price,
               })

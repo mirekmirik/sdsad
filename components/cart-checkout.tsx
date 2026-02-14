@@ -3,26 +3,25 @@
 import { useState, useEffect, useCallback } from "react"
 import { X, ArrowLeft, Loader2, RefreshCw, Copy, Check } from "lucide-react"
 import Image from "next/image"
+import { CountryFlag } from "@/components/country-flag"
 
 interface CartItem {
   planName: string
   countryName: string
-  countryFlag: string
+  countryCode: string
   quantity: number
   price: number
 }
 
 interface CartCheckoutProps {
-  item: CartItem
+  items: CartItem[]
   onBack: () => void
-  onRemoveItem: () => void
+  onRemoveItem: (index: number) => void
   onGoHome: () => void
 }
 
 type PaymentMethod = "card" | "crypto"
 type CheckoutPhase = "form" | "loading" | "details" | "waiting"
-
-
 
 function formatTime(seconds: number): string {
   const m = Math.floor(seconds / 60)
@@ -30,7 +29,7 @@ function formatTime(seconds: number): string {
   return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`
 }
 
-export function CartCheckout({ item, onBack, onRemoveItem, onGoHome }: CartCheckoutProps) {
+export function CartCheckout({ items, onBack, onRemoveItem, onGoHome }: CartCheckoutProps) {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card")
   const [agreedToTerms, setAgreedToTerms] = useState(true)
   const [promoCode, setPromoCode] = useState("")
@@ -39,7 +38,7 @@ export function CartCheckout({ item, onBack, onRemoveItem, onGoHome }: CartCheck
   const [timerExpired, setTimerExpired] = useState(false)
   const [copied, setCopied] = useState(false)
 
-  const total = item.price * item.quantity
+  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
 
   // Timer countdown
   useEffect(() => {
@@ -62,7 +61,6 @@ export function CartCheckout({ item, onBack, onRemoveItem, onGoHome }: CartCheck
 
   const handlePay = useCallback(() => {
     setPhase("loading")
-    // Simulate API confirmation delay
     setTimeout(() => {
       setPhase("details")
       setTimeLeft(15 * 60)
@@ -91,7 +89,7 @@ export function CartCheckout({ item, onBack, onRemoveItem, onGoHome }: CartCheck
 
   const timerProgress = timeLeft / (15 * 60)
 
-  // Phase: Loading - waiting for API confirmation
+  // Phase: Loading
   if (phase === "loading") {
     return (
       <div className="flex flex-col items-center justify-center px-6 py-16 sm:px-8">
@@ -113,7 +111,7 @@ export function CartCheckout({ item, onBack, onRemoveItem, onGoHome }: CartCheck
     )
   }
 
-  // Phase: Waiting for payment confirmation
+  // Phase: Waiting
   if (phase === "waiting") {
     return (
       <div className="flex flex-col items-center justify-center px-6 py-16 sm:px-8">
@@ -287,27 +285,35 @@ export function CartCheckout({ item, onBack, onRemoveItem, onGoHome }: CartCheck
       </div>
 
       <div className="flex flex-col gap-4 p-6 sm:p-8">
-        {/* Cart item */}
-        <div className="flex items-center justify-between rounded-2xl border border-border bg-secondary/40 px-5 py-4">
-          <div>
-            <h3 className="text-sm font-bold text-foreground">{item.planName}</h3>
-            <p className="mt-0.5 text-xs text-muted-foreground">
-              {item.countryFlag} {item.countryName} {"\u00B7"} {item.quantity} {"��т."}
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="text-lg font-extrabold tabular-nums text-primary">
-              {total.toLocaleString("ru-RU")} {"\u20BD"}
-            </span>
-            <button
-              onClick={onRemoveItem}
-              className="flex h-7 w-7 items-center justify-center rounded-full text-destructive transition-colors hover:bg-destructive/10"
-              aria-label="Удалить"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
+        {/* Cart items */}
+        {items.map((item, index) => {
+          const itemTotal = item.price * item.quantity
+          return (
+            <div key={`${item.countryCode}-${item.planName}-${index}`} className="flex items-center justify-between rounded-2xl border border-border bg-secondary/40 px-5 py-4">
+              <div className="flex items-center gap-3">
+                <CountryFlag code={item.countryCode} size={28} />
+                <div>
+                  <h3 className="text-sm font-bold text-foreground">{item.planName}</h3>
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    {item.countryName} {"\u00B7"} {item.quantity} {"шт."}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-lg font-extrabold tabular-nums text-primary">
+                  {itemTotal.toLocaleString("ru-RU")} {"\u20BD"}
+                </span>
+                <button
+                  onClick={() => onRemoveItem(index)}
+                  className="flex h-7 w-7 items-center justify-center rounded-full text-destructive transition-colors hover:bg-destructive/10"
+                  aria-label="Удалить"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          )
+        })}
 
         {/* Payment method */}
         <div className="grid grid-cols-2 gap-3">

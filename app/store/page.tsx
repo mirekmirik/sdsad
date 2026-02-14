@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { ArrowRight, Shield, Users, Star, Zap } from "lucide-react"
+import { ArrowRight, Shield, Users, Star, Zap, ShoppingCart } from "lucide-react"
 import { StoreHeader } from "@/components/store-header"
 import type { NavTab } from "@/components/store-header"
 import { StepIndicator } from "@/components/step-indicator"
@@ -55,13 +55,13 @@ export default function StorePage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [username, setUsername] = useState("")
   const [showLogin, setShowLogin] = useState(false)
-  const [cartItem, setCartItem] = useState<{
+  const [cartItems, setCartItems] = useState<{
     planName: string
     countryName: string
-    countryFlag: string
+    countryCode: string
     quantity: number
     price: number
-  } | null>(null)
+  }[]>([])
 
   const selectedPlanData = plans.find((p) => p.id === selectedPlan)
 
@@ -88,28 +88,64 @@ export default function StorePage() {
     setCurrentStep(1)
   }
 
-  const handleBuyNow = (data: { countryName: string; countryFlag: string; quantity: number; price: number }) => {
-    setCartItem({
+  const handleBuyNow = (data: { countryName: string; countryCode: string; quantity: number; price: number }) => {
+    setCartItems([{
       planName: selectedPlanData?.name ?? "",
       countryName: data.countryName,
-      countryFlag: data.countryFlag,
+      countryCode: data.countryCode,
       quantity: data.quantity,
       price: data.price,
-    })
+    }])
     setCurrentStep(3)
+  }
+
+  const handleAddToCart = (data: { countryName: string; countryCode: string; quantity: number; price: number }) => {
+    setCartItems((prev) => {
+      const existing = prev.find(
+        (item) => item.countryCode === data.countryCode && item.planName === (selectedPlanData?.name ?? "")
+      )
+      if (existing) {
+        return prev.map((item) =>
+          item.countryCode === data.countryCode && item.planName === (selectedPlanData?.name ?? "")
+            ? { ...item, quantity: item.quantity + data.quantity }
+            : item
+        )
+      }
+      return [
+        ...prev,
+        {
+          planName: selectedPlanData?.name ?? "",
+          countryName: data.countryName,
+          countryCode: data.countryCode,
+          quantity: data.quantity,
+          price: data.price,
+        },
+      ]
+    })
+  }
+
+  const handleGoToCart = () => {
+    if (cartItems.length > 0) {
+      setCurrentStep(3)
+    }
   }
 
   const handleCartBack = () => {
     setCurrentStep(2)
   }
 
-  const handleRemoveItem = () => {
-    setCartItem(null)
-    setCurrentStep(2)
+  const handleRemoveItem = (index: number) => {
+    setCartItems((prev) => {
+      const next = prev.filter((_, i) => i !== index)
+      if (next.length === 0) {
+        setCurrentStep(2)
+      }
+      return next
+    })
   }
 
   const handleGoHome = () => {
-    setCartItem(null)
+    setCartItems([])
     setCurrentStep(1)
     setActiveTab("store")
   }
@@ -119,7 +155,7 @@ export default function StorePage() {
     setActiveTab(tab)
     if (tab === "store") {
       setCurrentStep(1)
-      setCartItem(null)
+      setCartItems([])
     }
   }
 
@@ -233,14 +269,32 @@ export default function StorePage() {
                   selectedPlanPrice={selectedPlanData?.price ?? 0}
                   onBack={handleBack}
                   onBuyNow={handleBuyNow}
+                  onAddToCart={handleAddToCart}
+                  cartItemCount={cartItems.length}
                 />
               </div>
+
+              {/* Cart bar when items are added */}
+              {cartItems.length > 0 && (
+                <div className="border-t border-border/50 bg-secondary/30 px-6 py-4 sm:px-8">
+                  <button
+                    onClick={handleGoToCart}
+                    className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/30 active:scale-[0.98]"
+                  >
+                    <ShoppingCart className="h-4 w-4" />
+                    {"Перейти в корзину"}
+                    <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-primary-foreground/20 px-1.5 text-[10px] font-bold text-primary-foreground">
+                      {cartItems.length}
+                    </span>
+                  </button>
+                </div>
+              )}
             </>
           )}
 
-          {activeTab === "store" && currentStep === 3 && cartItem && (
+          {activeTab === "store" && currentStep === 3 && cartItems.length > 0 && (
             <CartCheckout
-              item={cartItem}
+              items={cartItems}
               onBack={handleCartBack}
               onRemoveItem={handleRemoveItem}
               onGoHome={handleGoHome}
